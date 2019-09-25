@@ -1,8 +1,9 @@
 import json
 from flask import (request, abort, jsonify)
 from werkzeug.exceptions import (BadRequest, NotFound)
+from marshmallow import fields
 from contact_flask_sqlalchemy_example import ma
-from contact_flask_sqlalchemy_example.models import Contact
+from contact_flask_sqlalchemy_example.models import (Contact, EmailAddress)
 from contact_flask_sqlalchemy_example.models.contact_op import (
     create_contact_op,
     get_contacts_op,
@@ -12,9 +13,15 @@ from contact_flask_sqlalchemy_example.models.contact_op import (
 )
 
 
+class EmailAddressSchema(ma.ModelSchema):
+    class Meta:
+        model = EmailAddress
+
 class ContactSchema(ma.ModelSchema):
     class Meta:
         model = Contact
+
+    email_addresses = fields.Nested(EmailAddressSchema, many=True)
 
 
 contact_schema = ContactSchema()

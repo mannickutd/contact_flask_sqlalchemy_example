@@ -1,10 +1,19 @@
 from contact_flask_sqlalchemy_example import db
-from contact_flask_sqlalchemy_example.models import (Contact, transactional)
+from contact_flask_sqlalchemy_example.models import (Contact, EmailAddress, transactional)
 
 
-def create_contact_op(username: str, first_name: str, last_name: str) -> Contact:
+@transactional
+def create_contact_op(username: str,
+                      first_name: str,
+                      last_name: str,
+                      email_addresses: tuple = ()
+) -> Contact:
     contact = Contact(username=username, first_name=first_name, last_name=last_name)
     db.session.add(contact)
+    db.session.commit()
+    for email_address in email_addresses:
+        ea = EmailAddress(email_address=email_address, contact_id=contact.id)
+        db.session.add(ea)
     db.session.commit()
     return contact
 
@@ -30,4 +39,7 @@ def get_contacts_op(username=None):
 @transactional
 def delete_contact_op(id_):
     Contact.query.filter_by(id=id_).delete()
+
+
+
 

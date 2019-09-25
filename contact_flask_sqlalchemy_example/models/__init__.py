@@ -24,6 +24,13 @@ def transaction_rollback():
 
 class Contact(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String)
-    first_name = db.Column(db.String)
-    last_name = db.Column(db.String)
+    username = db.Column(db.String, nullable=False)
+    first_name = db.Column(db.String, nullable=False)
+    last_name = db.Column(db.String, nullable=False)
+    email_addresses = db.relationship('EmailAddress', backref='email_addresses', lazy=True)
+
+
+class EmailAddress(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email_address = db.Column(db.String(120), nullable=False)
+    contact_id = db.Column(db.Integer, db.ForeignKey('contact.id'), nullable=False)

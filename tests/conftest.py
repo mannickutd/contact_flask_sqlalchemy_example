@@ -60,3 +60,21 @@ def sample_contact(db_sess,
                              sample_last_name
     )
 
+
+@pytest.fixture
+def sample_email_address():
+    return "email@email.com"
+
+
+@pytest.fixture
+def sample_contact_with_email_addresses(db_sess,
+                                        sample_username,
+                                        sample_first_name,
+                                        sample_last_name,
+                                        sample_email_address
+):
+    return create_contact_op(sample_username,
+                             sample_first_name,
+                             sample_last_name,
+                             [sample_email_address]
+    )

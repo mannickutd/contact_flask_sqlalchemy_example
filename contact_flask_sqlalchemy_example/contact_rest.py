@@ -38,9 +38,11 @@ def create_contact() -> dict:
     errors = contact_schema.validate(request_json)
     if errors:
         abort(BadRequest, str(errors))
+    email_addresses = [x['email_address'] for x in request_json.get('email_addresses', [])]
     contact = create_contact_op(request_json['username'],
                                 request_json['first_name'],
-                                request_json['last_name']
+                                request_json['last_name'],
+                                email_addresses,
     )
     return jsonify(contact_schema.dump(contact))
 

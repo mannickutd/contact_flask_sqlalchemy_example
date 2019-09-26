@@ -1,3 +1,4 @@
+import time
 from contact_flask_sqlalchemy_example import db
 from contact_flask_sqlalchemy_example.models import (Contact, EmailAddress, transactional)
 
@@ -8,7 +9,9 @@ def create_contact_op(username: str,
                       last_name: str,
                       email_addresses: tuple = ()
 ) -> Contact:
-    contact = Contact(username=username, first_name=first_name, last_name=last_name)
+    contact = Contact(username=username,
+                      first_name=first_name,
+                      last_name=last_name)
     db.session.add(contact)
     db.session.commit()
     for email_address in email_addresses:
@@ -41,5 +44,7 @@ def delete_contact_op(id_):
     Contact.query.filter_by(id=id_).delete()
 
 
-
-
+@transactional
+def delete_old_contacts_op(time):
+    #Contact.query.filter_by(Contact.epoch < time).delete()
+    pass

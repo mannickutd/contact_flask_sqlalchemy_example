@@ -64,6 +64,28 @@ def test_create_contact(flask_app,
             assert json_resp['username'] == sample_username
 
 
+def test_create_contact_with_email_address(flask_app,
+                                           db_sess,
+                                           sample_username,
+                                           sample_first_name,
+                                           sample_last_name,
+                                           sample_email_address,
+):
+    with flask_app.test_request_context():
+        with flask_app.test_client() as client:
+            data = {
+                'username': sample_username,
+                'first_name': sample_first_name,
+                'last_name': sample_last_name,
+                'email_addresses': [{'email_address': sample_email_address}]
+            }
+            resp = client.post('/contact', data=json.dumps(data))
+            assert resp.status_code == 200
+            json_resp = json.loads(resp.get_data(as_text=True))
+            assert json_resp['username'] == sample_username
+            assert json_resp['email_addresses'][0]['email_address'] == sample_email_address
+
+
 def test_update_contact(flask_app,
                         db_sess,
                         sample_contact,
